@@ -12,13 +12,24 @@
 
 
 
-auto solver(force_type f, double y_0, double T, unsigned N){
+const auto solver(force_type &f, double y_0, double T, unsigned N){
     output osk;
+    double h=T/N;
     for(size_t i=0; i<=N; ++i){
         osk.t_n.push_back(0+T/N*i);
     }
-    auto F = [](double x, t_1)
-    osk.u_n.push_back(f(1., 1.));
+    auto F = [=](double x,double t_1,double t_2,double u_n){
+        return x-h/2*(f(t_1, u_n)+f(t_2, u_n))-u_n;
+    };
+    osk.u_n.push_back(y_0);
+
+    for(size_t i=1; i<=N; ++i){
+        auto F_x = [=](double x){
+            return F(x, osk.t_n[i-1], osk.t_n[i], osk.u_n[i-1]);
+        };
+        //std::tuple<double, bool>    secant(Function const &F, double a, double b);
+    }
+
     return osk;
 }
 
