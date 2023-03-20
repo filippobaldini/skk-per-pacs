@@ -24,7 +24,7 @@ std::vector<double> t_n;
 // };
 
 
-const auto solver(force_type f, double y_0, double T, unsigned N);
+void mysolver(force_type f, double y_0, double T, unsigned N, output & osk);
 
 // class problem {
 //     public:

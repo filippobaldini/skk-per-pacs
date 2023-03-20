@@ -1,5 +1,5 @@
 #include "Cauchy_problem.hpp"
-//#include "basicZeroFun.hpp"
+#include "basicZeroFun.hpp"
 
 #include <algorithm>
 #include <cmath>
@@ -8,30 +8,28 @@
 #include <vector>
 
 // to compile:
-// g++ Cauchy_problem.cpp -o  Cauchy_problem -I/home/pietr/pacs_directory/pacs-examples/Examples/src/LinearAlgebraUtil -I/home/pietr/pacs_directory/pacs-examples/Examples/include -I/home/pietr/pacs_directory/pacs-examples/Examples/src/Utilitie
+// g++ Cauchy_problem.cpp -o  Cauchy_problem -I/home/pietr/pacs_directory/pacs-examples/Examples/src/LinearAlgebraUtil -I/home/pietr/pacs_directory/pacs-examples/Examples/include -I/home/pietr/pacs_directory/pacs-examples/Examples/src/Utilities
 
 
 
-const auto solver(force_type &f, double y_0, double T, unsigned N){
-    output osk;
+void mysolver(force_type f, double y_0, double T, unsigned N, output & osk){
     double h=T/N;
     for(size_t i=0; i<=N; ++i){
         osk.t_n.push_back(0+T/N*i);
     }
     auto F = [=](double x,double t_1,double t_2,double u_n){
-        return x-h/2*(f(t_1, u_n)+f(t_2, u_n))-u_n;
+        return x-h/2*(f(t_1, x)+f(t_2, u_n))-u_n;
     };
     osk.u_n.push_back(y_0);
 
     for(size_t i=1; i<=N; ++i){
         auto F_x = [=](double x){
             return F(x, osk.t_n[i-1], osk.t_n[i], osk.u_n[i-1]);
-        };
-        //std::tuple<double, bool>    secant(Function const &F, double a, double b);
+        }; 
+        std::tuple<double, bool> gio = apsc::secant(F_x, -10000., +10000.);
+        osk.u_n.push_back(std::get<0> (gio));
     }
-
-    return osk;
-}
+};
 
 // constexpr int func( int , int ){return 1;};
 
