@@ -33,5 +33,7 @@ void mysolver(force_type f, double y_0, double T, unsigned N, output & osk);
 
 // }
 
+double computing_L_inf_error(std::vector<double> & u_n, std::vector<double> & t_n, std::function<double(double)> u_ex);
+
 
 #endif
